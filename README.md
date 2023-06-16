@@ -1,5 +1,4 @@
 # IslandsEngine
-**TODO:**
 
 ## Installation
 
