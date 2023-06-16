@@ -54,7 +54,17 @@ defmodule IslandsEngine.Game do
     opponent = opponent(state, player)
     opponent_board = Player.get_board(opponent)
     response = Player.guess_coordinate(opponent_board, coordinate)
-    {:reply, response, state}
+    |> forest_check(opponent, coordinate)
+    |> win_check(opponent, state)
+  end
+
+  def forest_check(:miss, _opponent, _coordinate) do
+    {:miss, :none}
+  end
+
+  def forest_check(:hit, opponent, coordinate) do
+    island_key = Player.forested_island(opponent, coordinate)
+    {:hit, island_key}
   end
 
   def handle_call(:demo, _from, state) do
@@ -63,5 +73,18 @@ defmodule IslandsEngine.Game do
 
   def call_demo(game) do
     GenServer.call(game, :demo)
+  end
+
+  defp win_check({hit_or_miss, :none}, _opponent, state) do
+    {:reply, {hit_or_miss, :none, :no_win}, state}
+  end
+
+  defp win_check({:hit, island_key}, opponent, state) do
+    win_status =
+      case Player.win?(opponent) do
+        true -> :win
+        false -> :no_win
+      end
+      {:reply, {:hit, island_key, win_status}, state}
   end
 end
