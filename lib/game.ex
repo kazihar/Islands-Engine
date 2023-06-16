@@ -3,10 +3,18 @@ defmodule IslandsEngine.Game do
 
   defstruct player1: :none, player2: :none
 
-  alias IslandsEngine.{Player, Game, IslandSet}
+  alias IslandsEngine.{Player, Game}
 
-  def start_link(name) when not is_nil(name) do
-    GenServer.start_link(__MODULE__, name)
+  def start_link(name) when is_binary(name) and byte_size(name) > 0 do
+    GenServer.start_link(__MODULE__, name, name: {:global, "game:#{name}"})
+  end
+
+  def stop(pid) do
+    GenServer.cast(pid, :stop)
+  end
+
+  def handle_cast(:stop, state) do
+    {:stop, :normal, state}
   end
 
   def init(name) do
