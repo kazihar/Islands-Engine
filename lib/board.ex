@@ -18,10 +18,10 @@ defmodule IslandsEngine.Board do
   end
 
   defp string_body(board) do
-    Enum.reduce(keys(), "", fn (key, acc) ->
+    Enum.reduce(keys(), "", fn key, acc ->
       coord = get_coordinate(board, key)
       acc <> "#{key} => #{Coordinate.to_string(coord)}, \n"
-    end )
+    end)
   end
 
   def start_link() do
@@ -34,12 +34,12 @@ defmodule IslandsEngine.Board do
 
   def guess_coordinate(board, key) do
     get_coordinate(board, key)
-    |> Coordinate.guess
+    |> Coordinate.guess()
   end
 
   def coordinate_hit?(board, key) do
     get_coordinate(board, key)
-    |> Coordinate.hit?
+    |> Coordinate.hit?()
   end
 
   def set_coordinate_in_island(board, key, island) do
@@ -49,7 +49,7 @@ defmodule IslandsEngine.Board do
 
   def coordinate_island(board, key) do
     get_coordinate(board, key)
-    |> Coordinate.island
+    |> Coordinate.island()
   end
 
   def to_string(board) do
